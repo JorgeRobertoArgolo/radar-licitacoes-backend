@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,6 +22,7 @@ public class ProdutoService implements IProdutoService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "produtos", allEntries = true)
     public ProdutoResponseDTO salvarProduto(final ProdutoRequestDTO dto) {
         log.info("Salvando novo produto: {}", dto.nome());
         Produto produto = mapearProdutoRequestDTOParaProduto(dto);
@@ -29,6 +32,7 @@ public class ProdutoService implements IProdutoService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "produtos", key = "'all'")
     public Page<ProdutoResponseDTO> listarProdutos(final Pageable pageable) {
         log.info("Listando produtos com paginação");
         return produtoRepository.findAll(pageable)
@@ -37,6 +41,7 @@ public class ProdutoService implements IProdutoService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "produtos", key = "#id")
     public ProdutoResponseDTO buscarPorId(final Long id) {
         log.info("Buscando produto pelo id: {}", id);
         Produto produto = produtoRepository.findById(id)
