@@ -3,11 +3,14 @@ package br.com.jorgeargolo.radar_licitacoes_backend.modules.radarlicitacao.anali
 import br.com.jorgeargolo.radar_licitacoes_backend.modules.radarlicitacao.analise.dto.response.AnalisePrecoResponseDTO;
 import br.com.jorgeargolo.radar_licitacoes_backend.modules.radarlicitacao.historicocompra.repository.IHistoricoCompraRepository;
 import br.com.jorgeargolo.radar_licitacoes_backend.modules.radarlicitacao.historicocompra.repository.projection.IEstatisticasProdutoProjection;
+import br.com.jorgeargolo.radar_licitacoes_backend.modules.radarlicitacao.produto.repository.IProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.distribution.NormalDistribution;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -15,14 +18,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class AnalisePrecoService implements IAnalisePrecoService {
 
     private final IHistoricoCompraRepository historicoCompraRepository;
+    private final IProdutoRepository produtoRepository;
 
     @Override
     @Transactional(readOnly = true)
     public AnalisePrecoResponseDTO analisarProposta(final Long produtoId, final Double precoProposto) {
         log.info("Iniciando análise de preço para o produto de ID {}. Preço Proposto: {}", produtoId, precoProposto);
 
+        if (!produtoRepository.existsById(produtoId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado com o ID: " + produtoId);
+        }
+
         IEstatisticasProdutoProjection estatisticas = historicoCompraRepository.findEstatisticasByProdutoId(produtoId)
-                .orElseThrow(() -> new RuntimeException("Estatísticas não puderam ser processadas"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Estatísticas não puderam ser processadas"));
 
         Long qtdAmostras = estatisticas.getQuantidadeAmostras() != null ? estatisticas.getQuantidadeAmostras() : 0L;
 

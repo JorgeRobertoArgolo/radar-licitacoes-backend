@@ -9,11 +9,13 @@ import br.com.jorgeargolo.radar_licitacoes_backend.modules.radarlicitacao.produt
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,7 +32,7 @@ public class HistoricoCompraService implements IHistoricoCompraService {
         log.info("Salvando novo histórico de compra para o produto de ID {}", request.produtoId());
         
         Produto produto = produtoRepository.findById(request.produtoId())
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado com o ID: " + request.produtoId()));
 
         HistoricoCompra historico = mapearHistoricoCompraRequestDTOParaHistoricoCompra(request, produto);
         historicoCompraRepository.save(historico);
@@ -40,8 +42,13 @@ public class HistoricoCompraService implements IHistoricoCompraService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "historicoPorProduto", key = "#produtoId + '-' + #pageable.pageNumber + '-' + #pageable.pageSize")
     public Page<HistoricoCompraResponseDTO> listarHistoricoPorProduto(final Long produtoId, final Pageable pageable) {
         log.info("Listando histórico de compras do produto de ID {}", produtoId);
+        
+        if (!produtoRepository.existsById(produtoId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado com o ID: " + produtoId);
+        }
         
         return historicoCompraRepository.findByProdutoId(produtoId, pageable)
                 .map(this::mapearParaHistoricoCompraResponseDTO);
