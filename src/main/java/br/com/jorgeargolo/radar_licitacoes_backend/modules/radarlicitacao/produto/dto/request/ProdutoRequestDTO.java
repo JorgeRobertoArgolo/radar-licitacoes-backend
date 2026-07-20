@@ -13,6 +13,6 @@ public record ProdutoRequestDTO(
 
         @NotBlank(message = "A unidade de medida é obrigatória.")
         @Schema(description = "Unidade de medida (ex: Unidade, Caixa, Comprimido, Litro)", example = "Comprimido")
-        @JsonProperty("unidade_medida")
+        @JsonProperty("unidadeMedida")
         String unidadeMedida
 ) {}

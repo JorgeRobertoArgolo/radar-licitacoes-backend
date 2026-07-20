@@ -16,6 +16,6 @@ public record ProdutoResponseDTO(
         String nome,
 
         @Schema(description = "Unidade de medida do produto", example = "Comprimido")
-        @JsonProperty("unidade_medida")
+        @JsonProperty("unidadeMedida")
         String unidadeMedida
 ) {}
