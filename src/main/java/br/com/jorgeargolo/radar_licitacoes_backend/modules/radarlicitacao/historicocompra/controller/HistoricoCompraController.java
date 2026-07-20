@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping("/api/v1/historico-compras")
+@RequestMapping("/api/v1/radar-licitacao/historico-compras")
 @RequiredArgsConstructor
 @Tag(name = "Histórico de Compras", description = "Endpoints para gerenciamento do histórico de compras")
 public class HistoricoCompraController {
