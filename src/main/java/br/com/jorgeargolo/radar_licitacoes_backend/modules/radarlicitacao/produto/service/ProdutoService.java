@@ -32,7 +32,6 @@ public class ProdutoService implements IProdutoService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "produtos", key = "'all'")
     public Page<ProdutoResponseDTO> listarProdutos(final Pageable pageable) {
         log.info("Listando produtos com paginação");
         return produtoRepository.findAll(pageable)
