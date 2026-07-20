@@ -3,4 +3,5 @@ package br.com.jorgeargolo.radar_licitacoes_backend.modules.radarlicitacao.histo
 public interface IEstatisticasProdutoProjection {
     Double getMedia();
     Double getDesvioPadrao();
+    Long getQuantidadeAmostras();
 }

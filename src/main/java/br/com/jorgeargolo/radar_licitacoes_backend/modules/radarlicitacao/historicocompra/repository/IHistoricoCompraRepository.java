@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface IHistoricoCompraRepository extends JpaRepository<HistoricoCompra, Long> {
 
-    @Query(value = "SELECT AVG(preco_unitario) as media, STDDEV(preco_unitario) as desvioPadrao FROM historico_compras WHERE produto_id = :produtoId", nativeQuery = true)
+    @Query(value = "SELECT AVG(preco_unitario) as media, STDDEV(preco_unitario) as desvioPadrao, COUNT(*) as quantidadeAmostras FROM historico_compras WHERE produto_id = :produtoId", nativeQuery = true)
     Optional<IEstatisticasProdutoProjection> findEstatisticasByProdutoId(@Param("produtoId") Long produtoId);
 
     Page<HistoricoCompra> findByProdutoId(Long produtoId, Pageable pageable);
