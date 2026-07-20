@@ -74,7 +74,7 @@ public class AnalisePrecoService implements IAnalisePrecoService {
         NormalDistribution normalDistribution = new NormalDistribution(media, desvioPadrao);
         double probabilidade = normalDistribution.cumulativeProbability(precoProposto);
 
-        // 4. Regra de Negócio (Anomalia Z > 2)
+        /// 4. Regra de Negócio (Anomalia Z > 2)
         if (escoreZ > 2.0) {
             log.warn("Alerta de sobrepreço gerado! Escore-Z: {}", escoreZ);
             return mapearParaAnalisePrecoResponseDTO(
