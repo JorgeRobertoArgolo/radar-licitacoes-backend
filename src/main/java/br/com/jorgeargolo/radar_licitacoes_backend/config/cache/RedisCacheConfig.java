@@ -15,10 +15,18 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import org.springframework.cache.annotation.CachingConfigurer;
+import org.springframework.cache.interceptor.CacheErrorHandler;
+
 import java.time.Duration;
 
 @Configuration
-public class RedisCacheConfig {
+public class RedisCacheConfig implements CachingConfigurer {
+
+    @Override
+    public CacheErrorHandler errorHandler() {
+        return new CustomCacheErrorHandler();
+    }
 
     private static final Duration DEFAULT_TTL = Duration.ofMinutes(10);
     private static final Duration TTL_CATALOGO = Duration.ofHours(1);
