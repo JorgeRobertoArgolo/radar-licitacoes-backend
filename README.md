@@ -57,6 +57,10 @@ src/main/java/br/com/jorgeargolo/radar_licitacoes_backend/
 │   └── swagger/
 │       └── SwaggerConfig.java               # Configuração do OpenAPI/Swagger com JWT
 ├── infraestructure/
+│   ├── dto/
+│   │   └── ApiErrorResponseDTO.java         # DTO padrão de resposta para erros da API
+│   ├── handler/
+│   │   └── GlobalExceptionHandler.java      # @RestControllerAdvice para tratamento global de exceções
 │   ├── model/
 │   │   ├── PersistenceEntity.java           # Classe base com ID do tipo UUID
 │   │   └── SimplePersistenceEntity.java     # Classe base com ID do tipo Long
