@@ -34,8 +34,14 @@ public class ProdutoService implements IProdutoService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProdutoResponseDTO> listarProdutos(final Pageable pageable) {
-        log.info("Listando produtos com paginação");
+    public Page<ProdutoResponseDTO> listarProdutos(final String nome, final Pageable pageable) {
+        log.info("Listando produtos com paginação. Filtro nome: {}", nome);
+
+        if (nome != null && !nome.isBlank()) {
+            return produtoRepository.findByNomeContainingIgnoreCase(nome, pageable)
+                    .map(this::mapearParaProdutoResponseDTO);
+        }
+
         return produtoRepository.findAll(pageable)
                 .map(this::mapearParaProdutoResponseDTO);
     }

@@ -21,10 +21,11 @@ public interface IProdutoService {
     /**
      * Retorna a lista paginada de produtos.
      *
+     * @param nome Filtro opcional pelo nome do produto.
      * @param pageable Configurações de paginação.
      * @return Página contendo os produtos encontrados.
      */
-    Page<ProdutoResponseDTO> listarProdutos(final Pageable pageable);
+    Page<ProdutoResponseDTO> listarProdutos(final String nome, final Pageable pageable);
 
     /**
      * Busca um produto específico pelo ‘ID’.

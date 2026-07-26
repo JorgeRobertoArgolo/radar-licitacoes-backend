@@ -77,9 +77,13 @@ src/main/java/br/com/jorgeargolo/radar_licitacoes_backend/
         │   ├── repository/
         │   │   └── projection/              # Projection para AVG/STDDEV via SQL nativo
         │   └── service/
-        └── analise/                         # Domínio: Análise Estatística (sem @Entity)
+        ├── analise/                         # Domínio: Análise Estatística (sem @Entity)
+        │   ├── controller/
+        │   ├── dto/request/ & dto/response/
+        │   └── service/
+        └── dashboard/                       # Domínio: Dashboard de KPIs (sem @Entity)
             ├── controller/
-            ├── dto/request/ & dto/response/
+            ├── dto/response/
             └── service/
 ```
 
@@ -104,7 +108,7 @@ A arquitetura segue três domínios com responsabilidades bem definidas. O domí
 
 ### Domínio: Produto
 Gerencia o catálogo de itens da prefeitura.
-- `salvarProduto` · `listarProdutos` · `buscarPorId`
+- `salvarProduto` · `listarProdutos(nome?)` · `buscarPorId`
 
 ### Domínio: Histórico de Compra
 Gerencia o banco de dados de compras anteriores e processa agregações estatísticas direto no PostgreSQL.
@@ -116,6 +120,10 @@ Puro processamento de dados. Recebe um preço proposto, consulta o Histórico, c
 - `analisarProposta(produtoId, precoProposto)`
 
 > **Vantagem:** Se no futuro a fórmula estatística for substituída por um modelo de Machine Learning, apenas o domínio **Análise** sofrerá alterações.
+
+### Domínio: Dashboard (sem tabela no banco)
+Agrega dados dos domínios Produto e Histórico para fornecer indicadores consolidados (KPIs) ao painel principal.
+- `obterKpis()`
 
 ---
 
@@ -183,7 +191,7 @@ produtos                          historico_compras
 | Método | Rota | Descrição |
 |---|---|---|
 | `POST` | `/` | Cadastra um novo produto |
-| `GET` | `/` | Lista produtos (paginado) |
+| `GET` | `/?nome={filtro}` | Lista produtos (paginado, filtro opcional por nome) |
 | `GET` | `/{id}` | Busca produto por ID (com cache Redis) |
 
 ### Histórico de Compra — `/api/v1/radar-licitacao/historico-compras`
@@ -196,6 +204,11 @@ produtos                          historico_compras
 | Método | Rota | Descrição |
 |---|---|---|
 | `POST` | `/{id}/analisar` | Analisa risco de superfaturamento |
+
+### Dashboard — `/api/v1/radar-licitacao/dashboard`
+| Método | Rota | Descrição |
+|---|---|---|
+| `GET` | `/kpis` | Retorna KPIs consolidados (totais de produtos, compras, fornecedores e valor) |
 
 **Exemplo de request para análise:**
 ```json

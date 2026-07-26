@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Repository
@@ -18,4 +19,10 @@ public interface IHistoricoCompraRepository extends JpaRepository<HistoricoCompr
     Optional<IEstatisticasProdutoProjection> findEstatisticasByProdutoId(@Param("produtoId") Long produtoId);
 
     Page<HistoricoCompra> findByProdutoId(Long produtoId, Pageable pageable);
+
+    @Query(value = "SELECT COUNT(DISTINCT fornecedor) FROM historico_compras", nativeQuery = true)
+    Long countDistinctFornecedores();
+
+    @Query(value = "SELECT COALESCE(SUM(preco_unitario * quantidade), 0) FROM historico_compras", nativeQuery = true)
+    BigDecimal calcularValorTotalCompras();
 }

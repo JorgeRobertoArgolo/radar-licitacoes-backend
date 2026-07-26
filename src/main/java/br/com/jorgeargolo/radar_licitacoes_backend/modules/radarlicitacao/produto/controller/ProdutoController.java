@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.TimeUnit;
@@ -56,13 +57,14 @@ public class ProdutoController {
     /**
      * Endpoint para listar todos os produtos com paginação.
      *
+     * @param nome Filtro opcional pelo nome do produto.
      * @param pageable Configurações da paginação.
      * @return Página de produtos.
      */
     @GetMapping
-    @Operation(summary = "Listar produtos", description = "Retorna uma lista paginada de todos os produtos do catálogo")
-    public ResponseEntity<Page<?>> listarProdutos(@PageableDefault(size = 10) Pageable pageable) {
-        Page<ProdutoResponseDTO> page = produtoService.listarProdutos(pageable);
+    @Operation(summary = "Listar produtos", description = "Retorna uma lista paginada de todos os produtos do catálogo, com filtro opcional por nome")
+    public ResponseEntity<Page<?>> listarProdutos(@RequestParam(required = false) String nome, @PageableDefault(size = 10) Pageable pageable) {
+        Page<ProdutoResponseDTO> page = produtoService.listarProdutos(nome, pageable);
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS))
                 .body(page);
