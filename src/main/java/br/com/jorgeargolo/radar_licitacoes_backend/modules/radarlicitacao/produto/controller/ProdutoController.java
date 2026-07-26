@@ -66,7 +66,6 @@ public class ProdutoController {
     public ResponseEntity<Page<?>> listarProdutos(@RequestParam(required = false) String nome, @PageableDefault(size = 10) Pageable pageable) {
         Page<ProdutoResponseDTO> page = produtoService.listarProdutos(nome, pageable);
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS))
                 .body(page);
     }
 
@@ -81,7 +80,6 @@ public class ProdutoController {
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
         ProdutoResponseDTO dto = produtoService.buscarPorId(id);
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS))
                 .body(dto);
     }
 }

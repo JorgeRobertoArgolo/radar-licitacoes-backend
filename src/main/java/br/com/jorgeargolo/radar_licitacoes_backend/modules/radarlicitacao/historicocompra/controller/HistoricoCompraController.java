@@ -75,7 +75,6 @@ public class HistoricoCompraController {
         Page<HistoricoCompraResponseDTO> response = historicoCompraService.listarHistoricoPorProduto(produtoId, quantidade, pageable);
         
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS))
                 .body(response);
     }
 }
