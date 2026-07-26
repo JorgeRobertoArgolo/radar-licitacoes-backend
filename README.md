@@ -85,7 +85,11 @@ src/main/java/br/com/jorgeargolo/radar_licitacoes_backend/
         │   ├── controller/
         │   ├── dto/request/ & dto/response/
         │   └── service/
-        └── dashboard/                       # Domínio: Dashboard de KPIs (sem @Entity)
+        ├── dashboard/                       # Domínio: Dashboard de KPIs (sem @Entity)
+        │   ├── controller/
+        │   ├── dto/response/
+        │   └── service/
+        └── importacao/                      # Domínio: Importação de CSV (sem @Entity)
             ├── controller/
             ├── dto/response/
             └── service/
@@ -128,6 +132,10 @@ Puro processamento de dados. Recebe um preço proposto, consulta o Histórico, c
 ### Domínio: Dashboard (sem tabela no banco)
 Agrega dados dos domínios Produto e Histórico para fornecer indicadores consolidados (KPIs) ao painel principal.
 - `obterKpis()`
+
+### Domínio: Importação (sem tabela no banco)
+Processa arquivos CSV em lote. Cadastra automaticamente produtos inexistentes e insere o histórico de compras de forma massiva.
+- `importarCsv(file)`
 
 ---
 
@@ -213,6 +221,11 @@ produtos                          historico_compras
 | Método | Rota | Descrição |
 |---|---|---|
 | `GET` | `/kpis` | Retorna KPIs consolidados (totais de produtos, compras, fornecedores e valor) |
+
+### Importação — `/api/v1/radar-licitacao/importacao`
+| Método | Rota | Descrição |
+|---|---|---|
+| `POST` | `/csv` | Processa e salva arquivo `.csv` em lote (form-data: `file`) |
 
 **Exemplo de request para análise:**
 ```json
