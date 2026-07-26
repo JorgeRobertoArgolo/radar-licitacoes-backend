@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.TimeUnit;
@@ -56,20 +57,22 @@ public class HistoricoCompraController {
     }
 
     /**
-     * Lista o histórico completo de compras vinculado a um produto específico de forma paginada.
-     * Utilizado para consultar o comportamento de preço de um ‘item’ ao longo do tempo.
+     * Lista o histórico de compras vinculado a um produto específico de forma paginada,
+     * com filtro opcional por quantidade para análise de economia de escala.
      *
-     * @param produtoId ‘ID’ do produto na base de dados
-     * @param pageable  Configurações de paginação
+     * @param produtoId  'ID' do produto na base de dados
+     * @param quantidade Filtro por quantidade exata da compra (opcional)
+     * @param pageable   Configurações de paginação
      * @return ResponseEntity<?> com a página contendo os históricos do produto
      */
-    @Operation(summary = "Lista o histórico de compras de um produto específico")
+    @Operation(summary = "Lista o histórico de compras de um produto específico", description = "Retorna uma lista paginada do histórico, com filtro opcional por quantidade")
     @GetMapping("/produto/{produtoId}")
     public ResponseEntity<?> listarHistoricoPorProduto(
             @PathVariable Long produtoId,
+            @RequestParam(required = false) Integer quantidade,
             @PageableDefault Pageable pageable) {
         
-        Page<HistoricoCompraResponseDTO> response = historicoCompraService.listarHistoricoPorProduto(produtoId, pageable);
+        Page<HistoricoCompraResponseDTO> response = historicoCompraService.listarHistoricoPorProduto(produtoId, quantidade, pageable);
         
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS))

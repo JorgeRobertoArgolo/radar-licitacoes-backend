@@ -42,12 +42,17 @@ public class HistoricoCompraService implements IHistoricoCompraService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "historicoPorProduto", key = "#produtoId + '-' + #pageable.pageNumber + '-' + #pageable.pageSize")
-    public Page<HistoricoCompraResponseDTO> listarHistoricoPorProduto(final Long produtoId, final Pageable pageable) {
-        log.info("Listando histórico de compras do produto de ID {}", produtoId);
+    @Cacheable(value = "historicoPorProduto", key = "#produtoId + '-' + #quantidade + '-' + #pageable.pageNumber + '-' + #pageable.pageSize")
+    public Page<HistoricoCompraResponseDTO> listarHistoricoPorProduto(final Long produtoId, final Integer quantidade, final Pageable pageable) {
+        log.info("Listando histórico de compras do produto de ID {}. Filtro quantidade: {}", produtoId, quantidade);
         
         if (!produtoRepository.existsById(produtoId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado com o ID: " + produtoId);
+        }
+
+        if (quantidade != null) {
+            return historicoCompraRepository.findByProdutoIdAndQuantidade(produtoId, quantidade, pageable)
+                    .map(this::mapearParaHistoricoCompraResponseDTO);
         }
         
         return historicoCompraRepository.findByProdutoId(produtoId, pageable)

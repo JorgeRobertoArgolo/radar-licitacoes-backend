@@ -202,7 +202,7 @@ produtos                          historico_compras
 | Método | Rota | Descrição |
 |---|---|---|
 | `POST` | `/` | Registra uma nova compra no histórico |
-| `GET` | `/produto/{produtoId}` | Lista compras de um produto (paginado) |
+| `GET` | `/produto/{produtoId}?quantidade={filtro}` | Lista compras de um produto (paginado, filtro opcional por quantidade) |
 
 ### Análise — `/api/v1/radar-licitacao/analise-licitacoes`
 | Método | Rota | Descrição |

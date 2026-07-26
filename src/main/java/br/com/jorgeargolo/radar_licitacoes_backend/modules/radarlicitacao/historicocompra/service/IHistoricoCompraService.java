@@ -20,11 +20,13 @@ public interface IHistoricoCompraService {
     HistoricoCompraResponseDTO salvarHistorico(final HistoricoCompraRequestDTO request);
 
     /**
-     * Lista os históricos de compra associados a um produto de forma paginada.
+     * Lista os históricos de compra associados a um produto de forma paginada,
+     * com filtro opcional por quantidade (economia de escala).
      *
-     * @param produtoId ‘ID’ do produto
-     * @param pageable Configurações de paginação
+     * @param produtoId  'ID' do produto
+     * @param quantidade Filtro por quantidade exata da compra (opcional, pode ser nulo)
+     * @param pageable   Configurações de paginação
      * @return Página de HistoricoCompraResponseDTO
      */
-    Page<HistoricoCompraResponseDTO> listarHistoricoPorProduto(final Long produtoId, final Pageable pageable);
+    Page<HistoricoCompraResponseDTO> listarHistoricoPorProduto(final Long produtoId, final Integer quantidade, final Pageable pageable);
 }

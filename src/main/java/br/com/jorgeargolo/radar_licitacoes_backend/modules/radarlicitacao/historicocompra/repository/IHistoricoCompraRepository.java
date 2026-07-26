@@ -20,6 +20,8 @@ public interface IHistoricoCompraRepository extends JpaRepository<HistoricoCompr
 
     Page<HistoricoCompra> findByProdutoId(Long produtoId, Pageable pageable);
 
+    Page<HistoricoCompra> findByProdutoIdAndQuantidade(Long produtoId, Integer quantidade, Pageable pageable);
+
     @Query(value = "SELECT COUNT(DISTINCT fornecedor) FROM historico_compras", nativeQuery = true)
     Long countDistinctFornecedores();
 
