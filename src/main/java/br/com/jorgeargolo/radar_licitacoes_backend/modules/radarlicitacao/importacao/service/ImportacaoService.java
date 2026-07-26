@@ -81,7 +81,7 @@ public class ImportacaoService implements IImportacaoService {
                 Produto produto = produtosCache.get(nomeProduto.toLowerCase());
                 
                 if (produto == null) {
-                    Optional<Produto> produtoExistente = produtoRepository.findByNomeIgnoreCase(nomeProduto);
+                    Optional<Produto> produtoExistente = produtoRepository.findFirstByNomeIgnoreCase(nomeProduto);
                     
                     if (produtoExistente.isPresent()) {
                         produto = produtoExistente.get();
